@@ -14,6 +14,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
@@ -50,7 +51,14 @@ func main() {
 		Router:         chi.NewMux(),
 		UserService:    services.NewUserService(pool),
 		ProductService: services.NewProductService(pool),
+		BidsService:    services.NewBidsService(pool),
 		Sessions:       s,
+		WsUpgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool { return true },
+		},
+		AuctionLobby: services.AuctionLobby{
+			Rooms: make(map[uuid.UUID]*services.AuctionRoom),
+		},
 	}
 
 	api.BindRoutes()

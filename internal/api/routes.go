@@ -12,15 +12,16 @@ func (api *Api) BindRoutes() {
 	// 	[]byte(os.Getenv("GOBID_CSRF_KEY")),
 	// 	csrf.Secure(false), // DEV ONLY
 	// )
-
+	//
 	// api.Router.Use(csrfMiddleware)
 
 	api.Router.Route("/api", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
-			//r.Get("/csrftoken", api.HandleGetCSRFtoken)
-			r.Route("/users/", func(r chi.Router) {
+			// r.Get("/csrftoken", api.HandleGetCSRFtoken)
+			r.Route("/users", func(r chi.Router) {
 				r.Post("/signup", api.handleSignupUser)
 				r.Post("/login", api.handleLoginUser)
+
 				r.Group(func(r chi.Router) {
 					r.Use(api.AuthMiddleware)
 					r.Post("/logout", api.handleLogout)
@@ -28,9 +29,12 @@ func (api *Api) BindRoutes() {
 			})
 
 			r.Route("/products", func(r chi.Router) {
-				r.Post("/", api.HandleCreateProduct)
+				r.Group(func(r chi.Router) {
+					r.Use(api.AuthMiddleware)
+					r.Post("/", api.HandleCreateProduct)
+					r.Get("/ws/subscribe/{product_id}", api.handleSubscribeUserToAuction)
+				})
 			})
 		})
 	})
-
 }
