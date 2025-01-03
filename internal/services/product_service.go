@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/ArturLima/gobid/internal/store/pgstore"
@@ -32,13 +31,6 @@ func (ps *ProductService) CreateProduct(
 	baseprice float64,
 	auctionEnd time.Time,
 ) (uuid.UUID, error) {
-	fmt.Println(
-		sellerId,
-		productName,
-		description,
-		baseprice,
-		auctionEnd,
-	)
 	id, err := ps.queries.CreateProduct(ctx, pgstore.CreateProductParams{
 		SellerID:    sellerId,
 		ProductName: productName,
@@ -46,7 +38,6 @@ func (ps *ProductService) CreateProduct(
 		Baseprice:   baseprice,
 		AuctionEnd:  auctionEnd,
 	})
-
 	if err != nil {
 		return uuid.UUID{}, err
 	}

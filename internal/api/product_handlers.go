@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (api *Api) HandleCreateProduct(w http.ResponseWriter, r *http.Request) {
+func (api *Api) handleCreateProduct(w http.ResponseWriter, r *http.Request) {
 	data, problems, err := jsonutils.DecodeValidJson[product.CreateProductReq](r)
 	if err != nil {
 		jsonutils.EncodeJson(w, r, http.StatusUnprocessableEntity, problems)

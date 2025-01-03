@@ -71,7 +71,7 @@ func (api *Api) handleLoginUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (api *Api) handleLogout(w http.ResponseWriter, r *http.Request) {
+func (api *Api) handleLogoutUser(w http.ResponseWriter, r *http.Request) {
 	err := api.Sessions.RenewToken(r.Context())
 	if err != nil {
 		jsonutils.EncodeJson(w, r, http.StatusInternalServerError, map[string]any{
@@ -79,9 +79,9 @@ func (api *Api) handleLogout(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	api.Sessions.Remove(r.Context(), "AuthenticateUserId")
-	jsonutils.EncodeJson(w, r, http.StatusOK, map[string]any{
-		"message": "Logout successfuly",
-	})
 
+	api.Sessions.Remove(r.Context(), "AuthenticatedUserId")
+	jsonutils.EncodeJson(w, r, http.StatusOK, map[string]any{
+		"message": "logged out successfully",
+	})
 }
